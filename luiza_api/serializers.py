@@ -68,10 +68,26 @@ class MensagemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mensagem
-        #fields = '__all__'
         fields = ('id','titulo', 'texto', 'data_envio', 'hora_envio','modo','enviado','destinatario')
-        #exclude = ['status']
 
+    def validate_destinatario(self, dest):
+        #verificando se ao menos um destinatário foi escolhido
+        if len(dest) == 0:
+            raise serializers.ValidationError("Deve ser escolhido ao menos um destinatário para o envio da mensagem.")
+        return dest
+
+    #validação para o texto
+    def validate_texto(self, texto):
+        if len(texto) < 5:
+            raise serializers.ValidationError("O texto da mensagem é muito pequeno.")
+        return texto
+
+    def validate_data_envio(self, data):
+        #validando a data para envio da mensagem
+        if data < datetime.date.today():
+            raise serializers.ValidationError("Data inválida! Cadastrastre datas a partir da data atual.")
+        return data
+            
     #função para validação de  dados inseridos
     def validate(self, validated_data):
         titulo = validated_data['titulo'] 
@@ -82,7 +98,7 @@ class MensagemSerializer(serializers.ModelSerializer):
         data = validated_data['data_envio']
 
         #verificando se mensagens de E-mail ou Push possuem título
-        if modo.nome == 'E-mail' or modo.nome == 'Push' and titulo is None:
+        if (modo.nome == 'E-mail' or modo.nome == 'Push') and titulo is None:
             raise serializers.ValidationError("Mensagens de {} devem ter um título.".format(modo.nome))
  
         #verificando se o texto das mensagens Push possuem o número de caracteres adequado
@@ -92,14 +108,6 @@ class MensagemSerializer(serializers.ModelSerializer):
         #verificando se o texto das mensagens SMS possuem o número de caracteres adequado
         if modo.nome == 'SMS' and len(texto) > 160:
             raise serializers.ValidationError("Mensagens de SMS devem ter até 160 caracteres. (Foram digitados {} caracteres)".format(str(len(texto))))
-        
-        #verificando se ao menos um destinatário foi escolhido
-        if len(dest) == 0:
-            raise serializers.ValidationError("Deve ser escolhido ao menos um destinatário para o envio da mensagem.")
-        
-        #validando a data para envio da mensagem
-        if data < datetime.date.today():
-            raise serializers.ValidationError("Data inválida! Cadastrastre datas a partir da data atual.")
         
         #validando hora de envio da mensagem
         if data == datetime.date.today() and hora < datetime.datetime.now().time():
