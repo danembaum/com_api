@@ -28,6 +28,7 @@ Alterar o modo de criptografia da senha na nova versão do MySQL, porque Django 
 - Digite `use mysql;`
 - Windows: Digite `alter user 'seu_usuario'@localhost identified with mysql_native_password by 'sua_senha';` 
 - Ubuntu: `UPDATE mysql.user SET plugin = 'mysql_native_password' WHERE user = 'root'`;
+
 Restaurando a base de dados:
 - `mysql -u root -p < /diretório-do-arquivo/labs.sql`
 
