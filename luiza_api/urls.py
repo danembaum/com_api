@@ -5,7 +5,7 @@ from .views import DestinatarioViewSets, AgendamentoMensagemViewSets, ModoEnvioV
 router = routers.DefaultRouter()
 router.register(r'destinatario', DestinatarioViewSets)
 router.register(r'agendamentoMensagem', AgendamentoMensagemViewSets)
-router.register(r'modo', ModoEnvioViewSets)
+#router.register(r'modo', ModoEnvioViewSets)
 
 urlpatterns = [
     path('', include(router.urls)),

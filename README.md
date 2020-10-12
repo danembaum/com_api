@@ -39,3 +39,4 @@ Rodando a aplicação:
 - Para consultar um agendamento em específico e/ou realizar o cancelamento do agendamento (Excluir), digite `localhost:8000/agendamentoMensagem/<id>` e clique na opção `DELETE`
 
 Para a realização dos testes, abra um prompt e digite `pytest`
+- Após a execução dos testes, os resultados estarão disponíveis para visualização em HTML no diretório htmlcov (criado após a execução do teste)
