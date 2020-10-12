@@ -24,6 +24,12 @@ class Destinatario(models.Model):
         return self.nome
 
 
+#Seria mais fácil criar modo de envio como um CharField em Mensagem, com a opção choices, como no exemplo a seguir
+#     opcoes_envio = (('email', 'Email'), ('whatsapp', 'Whatsapp'), ('sms', 'SMS'), ('push', 'Push'))
+#
+#    modo = models.CharField(max_length = 10, null = False, choices = opcoes_envio)
+#Optei por colocar o modo de envio no BD para praticar o uso de Foreign Key com Django
+
 # Modelo para modo de envio da mensagem (E-mail, Whatsapp, SMS e Push)
 class ModoEnvio(models.Model):
     """
@@ -36,6 +42,7 @@ class ModoEnvio(models.Model):
         Função que retorna o campo nome como string representante da instância do objeto ModoEnvio
         """
         return self.nome
+
 
 # Modelo para cadastro de mensagem
 class Mensagem(models.Model):

@@ -1,37 +1,59 @@
-from django.test import TestCase
+"""
+Suite de teste para modelos definidos em models.py
+"""
+
+from django.urls import reverse
 import pytest
 from hypothesis import strategies as st, given
 from .models import Destinatario, Mensagem, ModoEnvio
-
+from .serializers import MensagemSerializer
 from mixer.backend.django import mixer
 
 from rest_framework.test import APIClient
 
 pytestmark = pytest.mark.django_db
 
-# Classe para teste do modelo Destinatario
-class TestDestinatarioMode:
-    #teste de criação de objeto
+
+class TestDestinatarioModel:
+    """
+    Classe para teste do modelo Destinatario
+    """
+    
     def test_destinatario_create(self):
+        """
+        Teste de criação de uma instância de Destinatario
+        """
         nome = "Francisco Souza"
-        destinatario = mixer.blend(Destinatario, nome=nome)
+        email = "chico@django.com"
+        #criando instância de destinatário com valores definidos para nome e email, com os outros
+        #campos definidos automáticamente
+        destinatario = mixer.blend(Destinatario, nome=nome, email=email)
 
         destinatario_result = Destinatario.objects.last()
 
         assert destinatario_result.nome == nome
-    #teste do retorno do método __str__
+
     def test_str_return(self):
+        """
+        Teste de retorno __str__ para uma instância de Destinatario
+        """
         nome = "Marlene da Silva"
-        destinatario = mixer.blend(Destinatario, nome=nome)
+        email = "marlene@django.com"
+        destinatario = mixer.blend(Destinatario, nome=nome, email=email)
 
         destinatario_result = Destinatario.objects.last()
 
         assert str(destinatario_result) == nome
     
-#Classe para teste do Modelo ModoEnvio
+
 class TestModoEnvioModel:
-    #teste de criação do objeto
+    """
+    Classe para teste do modelo Modo Envio
+    """
     def test_modoenvio_create(self):
+        """
+        Função para testar a criação de uma instância de ModoEnvio
+        """
         nome="E-mail"
 
         modoenvio = mixer.blend(ModoEnvio, nome=nome)
@@ -39,8 +61,11 @@ class TestModoEnvioModel:
         modo_result = ModoEnvio.objects.last()
 
         assert modo_result.nome == nome
-    #teste de retorno de __str__
+    
     def test_str_return(self):
+        """
+        Função para teste do retorno __str__ de uma instância de ModoEnvio
+        """
         nome = "Push"
 
         modoenvio = mixer.blend(ModoEnvio, nome=nome)
@@ -50,10 +75,15 @@ class TestModoEnvioModel:
         assert str(modo_result) == nome
 
 
-#Classe para teste do modelo Mensagem
 class TestMensagemModel:
-    #teste de criação do objeto
+    """
+    Função para teste do modelo Mensagem
+    """
+
     def test_mensagem_create(self):
+        """
+        Teste de criação de uma instância de Mensagem
+        """
         
         mensagem = mixer.blend(Mensagem)
 
@@ -61,8 +91,11 @@ class TestMensagemModel:
 
         assert mensagem_result is not None
 
-    #teste de criação do destinatario para mensagem
+
     def teste_mensagem_destinatario(self):
+        """
+        Teste para verificar se uma instância de Destinario foi criada para a instância de Mensagem
+        """
         mensagem = mixer.blend(Mensagem)
 
         mensagem_result = Mensagem.objects.last()
@@ -72,9 +105,14 @@ class TestMensagemModel:
         print("DEST: ", destinatario)
         assert destinatario is not None
     
-    #teste de verificação para saída da função enviado
+    #dado valores booleanos aleatórios
     @given(st.booleans())
     def test_enviado(self, envio):
+        """
+        Função para teste do retorno da função enviado    
+        Args:
+            envio (Boolean): Valores True ou False
+        """
         mensagem = mixer.blend(Mensagem, status=envio)
 
         mensagem_result = Mensagem.objects.last()
@@ -83,4 +121,3 @@ class TestMensagemModel:
             assert mensagem_result.enviado() == 'Enviada'
         else:
             assert mensagem_result.enviado() == 'Não enviada'
-   
