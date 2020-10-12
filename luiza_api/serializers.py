@@ -72,55 +72,6 @@ class DestinatarioSerializer(serializers.ModelSerializer):
         Função para criar o formato de número de CPF: ###.###.###-## 
         """
         cpf = value[:3] + '.' + value[3:6] + '.' + value[6:9] + '-' + value[9:]
-        return cpffrom rest_framework import serializers
-from .models import Destinatario, Mensagem, ModoEnvio
-import datetime
-
-class DestinatarioSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Destinatario
-        fields = ('dest_id','cpf', 'nome', 'email', 'celular')
-
-    #função para validar CPF
-    def validate_cpf(self, cpf):
-        #verificando se CPF contem letras
-        if not cpf.isnumeric():
-            raise serializers.ValidationError("CPF deve conter apenas números!")
-        #verificando se CPF tem tamanho menor que 11
-        elif len(cpf) < 11 or len(cpf) > 11:
-            raise serializers.ValidationError("CPF deve ter 11 digitos!(Foram digitados {} números)".format(str(len(cpf))))
-        else:
-            #aplicando máscara de formato do CPF
-            cpf = self.createCPFMask(cpf)
-        return cpf
-
-    #função para validar nome 
-    def validate_nome(self, nome):
-        if nome.isalnum():
-            raise serializers.ValidationError("Nome não deve conter números!")
-        return nome
-
-    #função para validar número de celular
-    def validate_celular(self, celular):
-        
-        #verificando se celular contem letras
-        if not celular.isnumeric():
-            raise serializers.ValidationError("Número de celular deve conter apenas números!")
-        #verificando se numero de celular tem 11 digitos
-        elif len(celular) < 11 or len(celular) > 11:
-            raise serializers.ValidationError("Número de celular deve ter 11 digitos! (Foram digitados {} números)".format(str(len(celular))))
-        else:
-            celular = self.createCelMask(celular)
-        return celular
-
-    #função para criar máscara para telefone celular (##)#####-####
-    def createCelMask(self, value):
-        celular = '(' + value[:2] + ')' + value[2:7] + '-' + value[7:]
-        return celular
-
-    #função para criar máscara de CPF (###.###.###-##)
-    def createCPFMask(self, value):
-        cpf = value[:3] + '.' + value[3:6] + '.' + value[6:9] + '-' + value[9:]
         return cpf
 
 #Serializer para Plataformas de envio
@@ -147,7 +98,7 @@ class MensagemSerializer(serializers.ModelSerializer):
     #obtendo as plataformas de envio
     modo = ModoEnvioSerializer 
 
-        class Meta:
+    class Meta:
         """
         Definindo Mensagem como modelo no qual o serializer deve obter os dados para serializar,
         assim como os campos que devem constar no formato JSON
